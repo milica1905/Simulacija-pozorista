@@ -1,0 +1,123 @@
+package application;
+
+import java.util.ArrayList;
+
+public class Karta {
+	private int id;
+	private int izvodjenje_predstave;
+	private int status;
+	private int posjetilac_id;
+	private int broj_karta;
+	
+	private static ArrayList<Karta> lista_karata = new ArrayList<>();
+
+	public Karta(int id, int izvodjenje_predstave, int status, int posjetilac_id, int broj_karta) {
+		this.id = id;
+		this.izvodjenje_predstave = izvodjenje_predstave;
+		this.status = status;
+		this.posjetilac_id = posjetilac_id;
+		this.broj_karta = broj_karta;
+		
+		boolean uslov = false;
+		for(Karta p : lista_karata)
+			if(p.getIzvodjenje_predstave() == this.izvodjenje_predstave && p.getStatus() == this.status && p.getPosjetilac_id() == this.posjetilac_id && p.getBroj_karta() == this.broj_karta) {
+				uslov= true;
+				break;
+			}
+		if(!uslov) {
+			lista_karata.add(this);
+		}
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public int getIzvodjenje_predstave() {
+		return izvodjenje_predstave;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public int getPosjetilac_id() {
+		return posjetilac_id;
+	}
+
+	public int getBroj_karta() {
+		return broj_karta;
+	}
+
+	public static ArrayList<Karta> getLista_karata() {
+		return lista_karata;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
+	public static int sljedeciSlobodanBroj(int izvodjenjepredstaveID, int brojSjedista) {
+		ArrayList<Integer> postojeciBrojevi = new ArrayList<>();
+		boolean provjera=false;
+		for(Karta k: Karta.getLista_karata()) {
+			if(k.getIzvodjenje_predstave() == izvodjenjepredstaveID) {
+				postojeciBrojevi.add(k.getBroj_karta());
+				provjera = true;
+			}
+		}
+		if(!provjera) {
+			return 1;
+		}
+		for(int i=1;i<=brojSjedista;i++) {
+			if(!postojeciBrojevi.contains(i))
+				return i;
+		}
+		return 1;
+	}
+	
+	public String toString() {
+		String string="Broj karte: " + this.getBroj_karta()+"\n";
+		if(this.status == 1) 
+			string += "Status: kupljena, ne koristeci ovu aplikaciju\n";
+		else if(this.status == 2)
+			string += "Status: rezervisana koristeci aplikaciju, ali nije preuzeta\n";
+		else
+			string += "Status: rezervisana koristeci aplikaciju, preuzeta\n";
+		string += Posjetilac_pozorista.dajPosjetiocaNaOsnovuIDa(this.getPosjetilac_id());
+		
+		for(Izvodjenje_predstave ip : Izvodjenje_predstave.getLista_izvodjenja_predstave()) {
+			if(this.getIzvodjenje_predstave() == ip.getId()) {
+				string += "Naziv predstave: "+Predstava.vratiNazivPredstave(ip.getPredstava_id())+"\n";
+				string+= "Ime pozorista: " + Pozoriste.vratiPozoristeNaOsnovuId(ip.getPozoriste_id()).getNaziv()+"\nGrad: " + Pozoriste.vratiPozoristeNaOsnovuId(ip.getPozoriste_id()).getGrad()+"\n";
+				string+="Cijena: " + ip.getCijena() + "\n";
+				
+			}
+		
+		}
+		return string;
+		
+	}
+	
+	
+	public static int idKarta(int izv, int posj_id) {
+		for (Karta k : Karta.getLista_karata()) {
+			if (k.getIzvodjenje_predstave() == izv && k.getPosjetilac_id() == posj_id) {
+				return k.getId();
+			}
+		}
+		return 0;
+	}
+	
+	public Karta vratiKartuPoId(int id) {
+		for (Karta k : Karta.getLista_karata()) {
+			if (k.getId() == id) {
+				return k;
+			}
+		}
+		return null;
+	}
+	
+	
+	
+}

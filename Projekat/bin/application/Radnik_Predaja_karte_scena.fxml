@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="519.0" prefWidth="639.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Kontroler_Radnik_predaja_karte">
+   <children>
+      <ImageView fitHeight="525.0" fitWidth="639.0" layoutY="-3.0" pickOnBounds="true">
+         <image>
+            <Image url="@../../../slika24.jpg" />
+         </image>
+      </ImageView>
+      <Label layoutX="292.0" layoutY="49.0" text="KORISNICKO IME POSJETIOCA">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="322.0" layoutY="163.0" text="LOZINKA POSJETIOCA">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="korisnicko_imeTf" layoutX="327.0" layoutY="89.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="passwordTf" layoutX="327.0" layoutY="204.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </PasswordField>
+      <Button fx:id="dugme_prikaz_karata" layoutX="374.0" layoutY="261.0" mnemonicParsing="false" onAction="#prikazKarata" text="Prikaz karata">
+         <font>
+            <Font name="Georgia Italic" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="nazad_dugme" layoutX="8.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchto_Nakon_prijave_Radnika" text="NAZAD" />
+      <ListView fx:id="listaKarata" layoutX="24.0" layoutY="95.0" prefHeight="322.0" prefWidth="268.0" />
+      <Button fx:id="dugme_predajte_kartu" layoutX="103.0" layoutY="439.0" mnemonicParsing="false" onAction="#predavanje" text="Predajte kartu">
+         <font>
+            <Font name="Georgia Italic" size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

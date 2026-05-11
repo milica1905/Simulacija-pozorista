@@ -1,0 +1,35 @@
+package application;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+
+public class Kontroler_Radnik_Kreira_Pozoriste {
+
+    @FXML
+    private Button dugme_kreiraj_pozoriste;
+
+    @FXML
+    private Button nazad_dugme;
+
+    @FXML
+    private TextField tf_broj_sjedista;
+
+    @FXML
+    private TextField tf_grad_pozorista;
+
+    @FXML
+    private TextField tf_naziv_pozorista;
+
+    @FXML
+    void kreirajNovoPozoriste(ActionEvent event) {
+
+    }
+
+    @FXML
+    void switchto_Nakon_prijave_Radnika(ActionEvent event) {
+
+    }
+
+}

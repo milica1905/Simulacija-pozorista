@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="477.0" prefWidth="673.0" style="-fx-background-color: #C9CDCE;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="application.Kontroler_Rad_Na_Blagajni">
+   <children>
+      <ImageView fitHeight="278.0" fitWidth="420.0" layoutY="-2.0" pickOnBounds="true">
+         <image>
+            <Image url="@../../../slika14.jpg" />
+         </image>
+      </ImageView>
+      <Button fx:id="prodaja_karte_bez_rez_dugme" layoutX="172.0" layoutY="289.0" mnemonicParsing="false" onAction="#switchto_Radnik_Prodaja_karte" text="Prodaja karte posjetiocu koji nije rezervisao karte">
+         <font>
+            <Font name="Georgia Italic" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="predaja_karte_koja_je_rez_dugme" layoutX="178.0" layoutY="340.0" mnemonicParsing="false" onAction="#switchto_Radnik_Predaja_karte" text="Predaja karte posjetiocu koji je rezervisao karte">
+         <font>
+            <Font name="Georgia Italic" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="otkazivanje_karata_dugme" layoutX="227.0" layoutY="391.0" mnemonicParsing="false" onAction="#switchto_Radnik_Otkazivanje_karte" text="Otkazivanje rezervisanih karata">
+         <font>
+            <Font name="Georgia Italic" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="nazad_dugme" layoutX="588.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchto_Nakon_prijave_Radnika" text="NAZAD">
+         <font>
+            <Font name="Georgia Italic" size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

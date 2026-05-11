@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="524.0" prefWidth="734.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="application.Kontroler_Radnik_Kreira_Pozoriste">
+   <children>
+      <ImageView fitHeight="524.0" fitWidth="734.0" layoutY="-2.0" pickOnBounds="true">
+         <image>
+            <Image url="@../../../slika16.jpg" />
+         </image>
+      </ImageView>
+      <Label layoutX="139.0" layoutY="39.0" text="UNESITE PODATKE O POZORIŠTU">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="139.0" layoutY="162.0" text="Naziv pozorišta:">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="dugme_kreiraj_pozoriste" layoutX="300.0" layoutY="401.0" mnemonicParsing="false" onAction="#kreirajNovoPozoriste" text="Kreiraj pozorište">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="nazad_dugme" blendMode="DARKEN" layoutX="648.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchto_Nakon_prijave_Radnika" text="NAZAD">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="12.0" />
+         </font>
+      </Button>
+      <TextField fx:id="tf_naziv_pozorista" layoutX="325.0" layoutY="160.0" promptText="Unesite naziv...">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="tf_grad_pozorista" layoutX="254.0" layoutY="227.0" promptText="Unesite grad...">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="14.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="tf_broj_sjedista" layoutX="299.0" layoutY="302.0" promptText="Unesite broj sjedišta...">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="14.0" />
+         </font>
+      </TextField>
+      <Label layoutX="146.0" layoutY="228.0" text="Grad:">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="146.0" layoutY="303.0" text="Broj sjedišta:">
+         <font>
+            <Font name="Lucida Calligraphy Italic" size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

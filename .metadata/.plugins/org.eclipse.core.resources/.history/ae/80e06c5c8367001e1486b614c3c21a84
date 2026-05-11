@@ -1,0 +1,66 @@
+package application;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListView;
+import javafx.stage.Stage;
+
+public class Kontroler_Radnik_predaja_karte {
+
+    @FXML
+    private Button dugme_prikaz_karata;
+
+    @FXML
+    private Button dugme_predajte_kartu;
+    
+    @FXML
+    private ListView<Karta> listaKarata;
+
+    @FXML
+    private Button nazad_dugme;
+
+    @FXML
+    void switchto_Nakon_prijave_Radnika(ActionEvent event) {
+    	Alert upozorenje = new Alert(Alert.AlertType.CONFIRMATION);
+	 	upozorenje.setTitle("POVRATAK NAZAD");
+	 	upozorenje.setContentText("Molimo Vas da potvrdite da želite da se vratite na prethodnu stranicu.");
+    
+	 	Optional <ButtonType>result = upozorenje.showAndWait();
+	 	if(result.get()==ButtonType.OK) {
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("Radnik_Na_Blagajni.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("DOBRODOSLI!");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+	 	}
+    }
+    
+    @FXML
+    void prikazKarata(ActionEvent event) {
+
+    }
+    
+    @FXML
+    void predavanje(ActionEvent event) {
+
+    }
+    
+    
+
+}

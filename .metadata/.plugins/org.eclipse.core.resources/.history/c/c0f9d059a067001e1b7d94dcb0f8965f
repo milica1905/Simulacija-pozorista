@@ -1,0 +1,400 @@
+package application;
+
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
+import javafx.stage.Stage;
+
+public class Kontroler_Pozorista_scena implements Initializable {
+
+		@FXML
+	    private Button nazad_dugme;
+	
+	    @FXML
+	    private Button otkazi_rezervaciju_dugme;
+	
+	    @FXML
+	    private Button prikazi_informacije_dugme;
+	
+	    @FXML
+	    private Button prikazi_predstave_dugme;
+	
+	    @FXML
+	    private Button rezervisi_kartu_dugme;
+
+	    
+	    @FXML
+	    private Button dugme_prikazi_informacije_ucesnika;
+
+	    @FXML
+	    private TextArea textArea_prikaz_informacija;
+	    
+	    @FXML
+	    private TextField textField_broj_rezervisanih_karata;
+
+	    @FXML
+	    private ListView<Pozoriste> ListView_Lista_pozorista;
+
+	    @FXML
+	    private ListView<Predstava> ListView_Lista_predstava;
+	    
+	    @FXML
+	    private ListView<Osoblje> ListView_Lista_ucesnika;
+
+	    @FXML
+	    void otkazivanje_rezervacije(ActionEvent event) {
+	    	// Prvo, proverimo da li je izabrana predstava iz liste predstava
+			Predstava selectedPredstava = ListView_Lista_predstava.getSelectionModel().getSelectedItem();
+			if (selectedPredstava == null) {
+				// Ako nije izabrana predstava, prikažemo poruku korisniku da izabere predstavu
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Greška");
+				alert.setHeaderText("Molimo izaberite predstavu za koju želite da otkazete kartu.");
+				alert.showAndWait();
+				return;
+			}
+
+			// Zatim, proverimo da li je broj rezervisanih karata unet
+			String brojKarataString = textField_broj_rezervisanih_karata.getText();
+			if (brojKarataString.isEmpty()) {
+				// Ako broj karata nije unet, prikažemo poruku korisniku da unese broj karata
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Greška");
+				alert.setHeaderText("Molimo unesite broj karata.");
+				alert.showAndWait();
+				return;
+			}
+			Object selectedObject = ListView_Lista_pozorista.getSelectionModel().getSelectedItem();
+			if (selectedObject instanceof Pozoriste)
+				izabranoPozoriste = (Pozoriste) selectedObject;
+			int izvodjenjePredstaveID = Izvodjenje_predstave.izvodjenje_pozID(selectedPredstava.getId()).getId();
+			int brojSjedista = Pozoriste.dajBrojSlobodnihSjedista(izabranoPozoriste,
+					Izvodjenje_predstave.vratiIzvodjenjeNaOsnovuID(izvodjenjePredstaveID)); // ovde sam ja stavila
+																							// Pozoriste ali bilo je u
+			// Provera datuma izvođenja predstave
+			Izvodjenje_predstave izvodjenje = Izvodjenje_predstave.izvodjenje_pozID(selectedPredstava.getId());
+			Timestamp datumPredstave = izvodjenje.getDatum_i_vrijeme();
+			if (!Izvodjenje_predstave.daLiJeMoguceOtkazatiRez(datumPredstave)) {
+				// Predstava se ne izvodi u narednom periodu
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Greška");
+				alert.setHeaderText(
+						"Izabrana predstava se ne moze otkazati.");
+				alert.showAndWait();
+				return;
+			}																			// gptu selectedpredstava
+			else {
+				try {
+					connect = Konekcija.getConnection();
+					boolean dodavanjekarte = false;
+					try {
+						int brojKarata = Integer.parseInt(brojKarataString);
+						statement = connect.prepareStatement("DELETE FROM karta WHERE id = ?");
+						statement.setInt(1,Karta.idKarta(izvodjenjePredstaveID, KontrolerMain.getIdPosjetioca()));
+						statement.executeUpdate();
+						Konekcija.ucitajPodatke();
+						dodavanjekarte = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					if (connect != null) {
+						try {
+							connect.close();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+					}
+					// Takođe, možete ažurirati informacije o broju slobodnih karata za izabranu
+					// predstavu
+					// kako bi se prikazale tačne informacije korisnicima.
+
+					// Ako želite promeniti status karata u bazi podataka, to možete uraditi ovde.
+
+				} catch (NumberFormatException e) {
+					// U slučaju da korisnik nije unio ispravan broj karata, prikažemo poruku o
+					// grešci
+					Alert alert1 = new Alert(Alert.AlertType.ERROR);
+					alert1.setTitle("Greška");
+					alert1.setHeaderText("Neispravan format broja rezervisanih karata.");
+					alert1.showAndWait();
+				}
+			}
+	    }
+	    
+	    int pomocniPozoristeID;
+	    Pozoriste izabranoPozoriste =null;
+	    
+	    @FXML
+	    void switchtoNakon_prijave_Posjetioca(ActionEvent event) {
+	    	Alert upozorenje = new Alert(Alert.AlertType.CONFIRMATION);
+		 	upozorenje.setTitle("POVRATAK NAZAD");
+		 	upozorenje.setContentText("Molimo Vas da potvrdite da želite da se vratite na prethodnu stranicu.");
+	    
+		 	Optional <ButtonType>result = upozorenje.showAndWait();
+		 	if(result.get()==ButtonType.OK) {
+			try {
+				Parent root = FXMLLoader.load(getClass().getResource("Pocetna_scena.fxml"));
+				Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+				Scene scene = new Scene(root);
+				String imePrezime;
+	    		if(KontrolerMain.prijava) {
+	    			imePrezime = KontrolerMain.imeIPrezimePosjetioca();
+	    		}
+	    		else {
+	    			imePrezime = Kontroler_Registracija_Posjetilac.vratiImePrezimePosjetiocaRegistracija();
+	    		}
+	    		stage.setTitle("Dobrodošli posjetioče " + imePrezime);
+				stage.setScene(scene);
+				stage.show();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+		 	}
+	    }
+
+
+	    @FXML
+	    void prikaz_informacija_predstave(ActionEvent event) {
+	    	Predstava selectedPredstava = ListView_Lista_predstava.getSelectionModel().getSelectedItem();
+	    	Predstava p = Predstava.vratiPredstavuNaOsnovuID(selectedPredstava.getId());
+	    	textArea_prikaz_informacija.clear();		
+	    	textArea_prikaz_informacija.appendText(p.toString() + Izvodjenje_predstave.izvodjenje_pozID(p.getId()).toString());
+	    	
+	    	ArrayList<Osoblje> reziserPredstave = new ArrayList<>();
+	    	ArrayList<Osoblje> autorPredstave = new ArrayList<>();
+	    	ArrayList<Osoblje> glumciPredstave = new ArrayList<>();
+			for(Osoblje_predstave op : Osoblje_predstave.getLista_osoblja_predstave()) {
+				if(op.getPredstava_id() == selectedPredstava.getId()) {
+					Osoblje o = Osoblje.vratiOsobljeNaOsnovuID(op.getOsoblje_id());
+					if(o.getStringTip(o.getTip()).equals("glumac"))
+						glumciPredstave.add(o);
+					else if(o.getStringTip(o.getTip()).equals("reziser"))
+						reziserPredstave.add(o);
+					else
+						autorPredstave.add(o);
+				}
+			}
+			ListView_Lista_ucesnika.getItems().clear();
+			ListView_Lista_ucesnika.getItems().addAll(glumciPredstave);
+			ListView_Lista_ucesnika.getItems().addAll(reziserPredstave);
+			ListView_Lista_ucesnika.getItems().addAll(autorPredstave);
+			
+			
+	  
+	    	//ListView_Lista_ucesnika.getItems().addAll(Osoblje_predstave.getLista_osoblja_predstave());			
+	    	/*
+			for(Izvodjenje_predstave ip : Izvodjenje_predstave.getLista_izvodjenja_predstave()) {
+				if(ip.getPozoriste_id() == pomocniPozoristeID) {
+					if(!pomocnaListaPredstava.contains(Predstava.vratiPredstavuNaOsnovuID(ip.getPredstava_id())))
+						pomocnaListaPredstava.add(Predstava.vratiPredstavuNaOsnovuID(ip.getPredstava_id()));
+					
+					
+				}
+			}
+			*/
+	    }
+
+	    @FXML
+	    void prikazivanje_predstava(ActionEvent event) {
+	    	
+	    	Object selectedObject =ListView_Lista_pozorista.getSelectionModel().getSelectedItem();
+	        if (selectedObject instanceof Pozoriste) {
+	        		
+	        	Pozoriste izabranoPozoriste = (Pozoriste) selectedObject;
+	                
+	            // Pozivamo metodu za dobijanje spiska predstava za izabrano pozorište
+	            ArrayList<Predstava> spisakPredstava;
+				try {
+					spisakPredstava = Predstava.spisakPredstavaPozorista(izabranoPozoriste.getId());
+		            ListView_Lista_predstava.getItems().clear();
+		            // Dodajemo nazive predstava u ispis
+		            for (Predstava s : spisakPredstava) {
+		            	ListView_Lista_predstava.getItems().addAll(s);
+		            }
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				};
+	                
+		       
+	        }
+	    	
+	    }
+	    
+	    @FXML
+	    void prikaz_informacija_o_ucesniku(ActionEvent event) {
+	    	
+	    }
+
+
+	    
+	    @FXML
+		void rezervacija_karte(ActionEvent event) {
+				   
+			       // Prvo, proverimo da li je izabrana predstava iz liste predstava
+			       Predstava selectedPredstava = ListView_Lista_predstava.getSelectionModel().getSelectedItem();
+			       if (selectedPredstava == null) {
+			           // Ako nije izabrana predstava, prikažemo poruku korisniku da izabere predstavu
+			           Alert alert = new Alert(Alert.AlertType.ERROR);
+			           alert.setTitle("Greška");
+			           alert.setHeaderText("Molimo izaberite predstavu za koju želite da rezervišete kartu.");
+			           alert.showAndWait();
+			           return;
+			       }
+
+			       // Zatim, proverimo da li je broj rezervisanih karata unet
+			       String brojKarataString = textField_broj_rezervisanih_karata.getText();
+			       if (brojKarataString.isEmpty()) {
+			           // Ako broj karata nije unet, prikažemo poruku korisniku da unese broj karata
+			           Alert alert = new Alert(Alert.AlertType.ERROR);
+			           alert.setTitle("Greška");
+			           alert.setHeaderText("Molimo unesite broj rezervisanih karata.");
+			           alert.showAndWait();
+			           return;
+			       }
+
+			       try {
+			           // Pretvaramo uneseni broj karata u integer
+			           int brojKarata = Integer.parseInt(brojKarataString);
+
+			           // Proverimo dostupnost karata
+			   			Object selectedObject = ListView_Lista_pozorista.getSelectionModel().getSelectedItem();
+			   			if (selectedObject instanceof Pozoriste) 
+			   				izabranoPozoriste = (Pozoriste) selectedObject;
+			           int izvodjenjePredstaveID = Izvodjenje_predstave.izvodjenje_pozID(selectedPredstava.getId()).getId();
+			           int brojSjedista = Pozoriste.dajBrojSlobodnihSjedista(izabranoPozoriste,Izvodjenje_predstave.vratiIzvodjenjeNaOsnovuID(izvodjenjePredstaveID)); 
+			           
+			           int slobodanBroj = Karta.sljedeciSlobodanBroj(izvodjenjePredstaveID, brojSjedista);
+
+			           if (slobodanBroj > brojSjedista) {
+			               // Nema dovoljno slobodnih mesta za rezervaciju
+			               Alert alert = new Alert(Alert.AlertType.ERROR);
+			               alert.setTitle("Greška");
+			               alert.setHeaderText("Nema dovoljno slobodnih mesta za rezervaciju " + brojKarata + " karte/a.");
+			               alert.showAndWait();
+			           } else {
+			               // Provera datuma izvođenja predstave
+			        	   Izvodjenje_predstave izvodjenje = Izvodjenje_predstave.izvodjenje_pozID(selectedPredstava.getId());
+			               Timestamp datumPredstave = izvodjenje.getDatum_i_vrijeme();
+			               if (!Izvodjenje_predstave.daLiSeIzvodiUNarednomPeriodu(datumPredstave)) {
+			                   // Predstava se ne izvodi u narednom periodu
+			                   Alert alert = new Alert(Alert.AlertType.ERROR);
+			                   alert.setTitle("Greška");
+			                   alert.setHeaderText("Izabrana predstava se ne izvodi u narednom periodu i ne možete je rezervisati.");
+			                   alert.showAndWait();
+			                   return;
+			               }
+			               
+			               // Stvaramo nove karte i dodajemo ih u listu karata sa statusom "rezervisana koristeći aplikaciju, ali nije preuzeta"
+			               for (int i = 0; i < brojKarata; i++) {
+			                   Karta novaKarta = new Karta(-1,izvodjenjePredstaveID, 2, KontrolerMain.getIdPosjetioca(), slobodanBroj);
+			                   Karta.getLista_karata().add(novaKarta);
+			                   slobodanBroj++;
+			               }
+
+			               // Ažuriramo status karata u bazi podataka ili obavljamo odgovarajuće radnje za praćenje rezervacija
+
+			               // Nakon uspešne rezervacije, možete prikazati potvrdu korisniku
+			               Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			               alert.setTitle("Uspešna rezervacija");
+			               alert.setHeaderText("Uspešno ste rezervisali " + brojKarata + " karte/a za predstavu: " + selectedPredstava.getNaziv());
+			               alert.showAndWait();
+			               
+			               try {
+								connect = Konekcija.getConnection();
+								boolean dodavanjekarte = false;
+								try {
+									statement = connect.prepareStatement("INSERT INTO karta (izvodjenje_predstave_id, status, posjetilac_id, broj_karta) VALUE (?,?,?,?)");
+									statement.setInt(1, izvodjenjePredstaveID);
+									statement.setInt(2, 2);
+									statement.setInt(3, KontrolerMain.getIdPosjetioca());
+									statement.setInt(4, brojKarata);
+									statement.executeUpdate();
+									Konekcija.ucitajPodatke();
+									dodavanjekarte = true;
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+
+								if (connect != null) {
+									try {
+										connect.close();
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+								}
+			               // Takođe, možete ažurirati informacije o broju slobodnih karata za izabranu predstavu
+			               // kako bi se prikazale tačne informacije korisnicima.
+
+			               // Ako želite promeniti status karata u bazi podataka, to možete uraditi ovde.
+			           
+
+			       } catch (NumberFormatException e) {
+			           // U slučaju da korisnik nije unio ispravan broj karata, prikažemo poruku o grešci
+			           Alert alert1 = new Alert(Alert.AlertType.ERROR);
+			           alert.setTitle("Greška");
+			           alert.setHeaderText("Neispravan format broja rezervisanih karata.");
+			           alert.showAndWait();
+			       }
+			           }
+			   }
+			           catch (Exception e) {
+			   			e.printStackTrace();
+			   		}
+			       
+			       }
+
+	    
+	    private Connection connect = null;
+	    private PreparedStatement statement = null;
+	    
+		@Override
+		public void initialize(URL arg0, ResourceBundle arg1) {
+			// TODO Auto-generated method stub
+			ListView_Lista_pozorista.getItems().addAll(Pozoriste.getLista_pozorista());
+
+			
+		}
+		
+
+
+
+	
+}
+			
+	
+
+
+		
+
+

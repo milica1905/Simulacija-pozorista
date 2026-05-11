@@ -1,0 +1,109 @@
+package application;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
+
+public class Kontroler_Rad_Na_Blagajni {
+
+    @FXML
+    private Button nazad_dugme;
+
+    @FXML
+    private Button otkazivanje_karata_dugme;
+
+    @FXML
+    private Button predaja_karte_koja_je_rez_dugme;
+
+    @FXML
+    private Button prodaja_karte_bez_rez_dugme;
+
+    @FXML
+    void switchto_Nakon_prijave_Radnika(ActionEvent event) {
+    	Alert upozorenje = new Alert(Alert.AlertType.CONFIRMATION);
+		upozorenje.setTitle("POVRATAK NAZAD");
+		upozorenje.setContentText("Molimo Vas da potvrdite da želite da se vratite na prethodnu stranicu.");
+
+		Optional<ButtonType> result = upozorenje.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			try {
+				Parent root = FXMLLoader.load(getClass().getResource("Nakon_prijave_Radnika.fxml"));
+				Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+				Scene scene = new Scene(root);
+				stage.setTitle("Dobrodošli radniče " + Kontroler_Radnik_prijava.imeIPrezimeRadnika());
+				stage.setScene(scene);
+				stage.show();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+    }
+
+    @FXML
+    void switchto_Radnik_Otkazivanje_karte(ActionEvent event) {
+    	try {
+			   Konekcija.ucitajKartu();
+				Parent root = FXMLLoader.load(getClass().getResource("Radnik_Otkazuje_rezervaciju.fxml"));
+				Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+				Scene scene = new Scene(root);
+				stage.setTitle("Radniče " + Kontroler_Radnik_prijava.vratiImePrezime() + ", izvršite otkazivanje rezervacije karte u " +  Pozoriste.vratiPozoristeNaOsnovuId(Kontroler_Nakon_prijave_Radnika.vratiPozoristeID()).getNaziv() + "!");
+				stage.setScene(scene);
+				stage.show();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+    }
+
+    @FXML
+    void switchto_Radnik_Predaja_karte(ActionEvent event) {
+    	if(!Izvodjenje_predstave.daLiPostojePredstaveKojeSeIzvodeUNarednomPeriodu(Kontroler_Nakon_prijave_Radnika.vratiPozoristeID())) {
+    		Alert alert4 = new Alert(Alert.AlertType.INFORMATION);
+			alert4.setTitle("OBAVJEŠTENJE!");
+			alert4.setContentText("U pozorištu " + Pozoriste.vratiPozoristeNaOsnovuId(Kontroler_Nakon_prijave_Radnika.vratiPozoristeID()).getNaziv() + " u narednom periodu nema izvodenja nijedne predstave!" + 
+			"\nTe nije moguće prodavati karte!");
+			alert4.show();
+    	}
+    	else {
+    	try {
+    		Konekcija.ucitajKartu();
+			Parent root = FXMLLoader.load(getClass().getResource("Scena_radnikProdajaKarte.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("Radniče " + Kontroler_Radnik_prijava.vratiImePrezime() + ", izvršite prodaju karte u " +  Pozoriste.vratiPozoristeNaOsnovuId(Kontroler_Nakon_prijave_Radnika.vratiPozoristeID()).getNaziv() + "!");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+    	}
+    }
+
+    @FXML
+    void switchto_Radnik_Prodaja_karte(ActionEvent event) {
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("Radnik_Prodaja_karte.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("Radniče " + Kontroler_Radnik_prijava.imeIPrezimeRadnika() + ", ovde se nalaze informacije o vama");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+    }
+
+}

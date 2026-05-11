@@ -1,0 +1,172 @@
+package application;
+
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.scene.Node;
+
+
+public class Kontroler_Radnik_prijava implements Initializable {
+		private Stage stage;
+		private Scene scene;
+		private Parent root;
+		
+		@FXML
+	    private TextField korisnicko_radnik_id;
+
+	    @FXML
+	    private PasswordField lozinka_radnik_id;
+
+	    @FXML
+	    private Button nazad_dugme;
+
+	    @FXML
+	    private Button prijava_radnik_dugme;
+	    
+	    private Connection connect = null;
+	    private PreparedStatement statement = null;
+	    private ResultSet result = null;
+	    public static boolean prijava;
+	    public static String korisnicko_Radnik_prijava;
+	    
+	    private static String ime;
+	    private static String prezime;
+	    
+	    private static String pomocnoKorisnicko;
+	    
+	    public static String vratiKorisnicko(){
+	    	return pomocnoKorisnicko;
+	    }
+	    
+	    public String vratiKorisnickoIme() {
+	        return korisnicko_radnik_id.getText();
+	    }
+	    
+	    public static String imeIPrezimeRadnika() {
+	    	return ime +" , " + prezime;
+	    }
+
+	    
+	    @FXML
+	    void prijava_radnik_klik(ActionEvent event) {
+	    	if(korisnicko_radnik_id.getText().equals("") && lozinka_radnik_id.getText().equals("")) {
+	    		Alert alert_prazna_polja = new Alert(Alert.AlertType.ERROR);
+	    		alert_prazna_polja.setContentText("Polja ne mogu biti prazna! Molimo popunite polja.");
+	    		alert_prazna_polja.show();
+	    	}
+	    	else if(korisnicko_radnik_id.getText().equals("")) {
+	    		Alert alert_prazno_korisnicko = new Alert(Alert.AlertType.ERROR);
+	    		alert_prazno_korisnicko.setContentText("Vaše polje je prazno. Molimo unesite korisnicko ime!");
+	    		alert_prazno_korisnicko.show();
+	    	}
+			
+	    	else if(lozinka_radnik_id.getText().equals("")) {
+	    		Alert alert_prazna_lozinka = new Alert(Alert.AlertType.ERROR);
+	    		alert_prazna_lozinka.setContentText("Vaše polje je prazno. Molimo unesite lozinku!");
+	    		alert_prazna_lozinka.show();
+	    	}
+	    	else {
+	    		boolean postojiRadnik = false;
+	    		boolean tacnaSifra = true;
+	    		String korisnickoIme = korisnicko_radnik_id.getText();
+
+	    		for (Radnik_Pozorista radnici : Radnik_Pozorista.getLista_radnikaPozorista()) {
+	    		    if (radnici.getKorisnicko_ime().equals(korisnickoIme)) {
+	    		    	postojiRadnik = true;
+	    		    	ime=radnici.getIme();
+	    		    	prezime=radnici.getPrezime();
+    
+	    		        if (!radnici.getLozinka().equals(Radnik_Pozorista.getMd5(lozinka_radnik_id.getText())))
+	    		        	tacnaSifra=false;
+	    		    } 
+	    		}    
+	    		
+	    		if(!postojiRadnik) {
+		   			Alert alert_ne_postoji_korisnicko = new Alert(Alert.AlertType.WARNING);
+		   			alert_ne_postoji_korisnicko.setTitle("UPOZORENJE");
+		   			alert_ne_postoji_korisnicko.setContentText("Korisnicko ime: " + korisnicko_radnik_id.getText() + " ne postoji.Pokušajte ponovo");
+		   			alert_ne_postoji_korisnicko.show();
+		   			korisnicko_radnik_id.setText("");
+		   			lozinka_radnik_id.setText("");
+	   			}
+	    		        
+	    		if (postojiRadnik && !tacnaSifra) {
+	    		    lozinka_radnik_id.setText("");
+	    		    Alert alert_neispravna_lozinka = new Alert(Alert.AlertType.WARNING);
+	    		    alert_neispravna_lozinka.setTitle("UPOZORENJE");
+	    		    alert_neispravna_lozinka.setContentText("Neispravna lozinka za " + korisnickoIme + ". Pokušajte ponovo");
+	    		    alert_neispravna_lozinka.show();
+	    		}
+	    		else {
+	    			try {
+	    				pomocnoKorisnicko = korisnicko_radnik_id.getText();
+	    	    		Parent root = FXMLLoader.load(getClass().getResource("Nakon_prijave_Radnika.fxml"));
+	    	    		Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+	    	    		Scene scene = new Scene(root);
+	    	    		stage.setTitle("Dobrodošli radniče " + ime+ ", " + prezime);
+	    	    		stage.setScene(scene);
+	    	    		stage.show();
+	        		 }
+	        		 catch(Exception e) {
+	        			 e.printStackTrace();
+	        		 }
+	        				
+	    		 }
+	    	}    
+	    		    
+	    		
+	    		
+	    		
+	    }
+
+	    @FXML
+	    void switchtoVratiNaPocetnu(ActionEvent event) {
+	    	Alert upozorenje = new Alert(Alert.AlertType.CONFIRMATION);
+		 	upozorenje.setTitle("POVRATAK NAZAD");
+		 	upozorenje.setContentText("Molimo Vas da potvrdite da želite da se vratite na pocetnu stranicu.");
+	    
+		 	Optional <ButtonType>result = upozorenje.showAndWait();
+		 	if(result.get()==ButtonType.OK) {
+			try {
+				Parent root = FXMLLoader.load(getClass().getResource("Pocetna_scena.fxml"));
+				Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+				Scene scene = new Scene(root);
+				stage.setTitle("DOBRODOSLI!");
+				stage.setScene(scene);
+				stage.show();
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+		 	}
+	    }
+
+		@Override
+		public void initialize(URL arg0, ResourceBundle arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public static String vratiImePrezime() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+}

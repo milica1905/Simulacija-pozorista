@@ -1,0 +1,206 @@
+package application;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
+
+public class Kontroler_Nakon_prijave_Radnika implements Initializable{
+	
+	private Stage stage;
+	private Scene scene;
+	private Parent root;
+	
+	
+    @FXML
+    private Button dodaj_Novo_Izvodjenje_dugme;
+
+    @FXML
+    private Button dodavanje_Nove_Predstave_dugme;
+
+    @FXML
+    private Button kreiranje_novog_pozorista_dugme;
+
+    @FXML
+    private Button kreiranje_radnika_dugme;
+
+    @FXML
+    private Button odjava_dugme;
+
+    @FXML
+    private Button predstave_Naredni_Period_dugme;
+
+    @FXML
+    private Button predstave_Prethodni_Period_dugme;
+
+    @FXML
+    private Button prikaz_ososblja_dugme;
+
+    @FXML
+    private Button prikaz_svih_predstava_dugme;
+
+    @FXML
+    private Button informacije_o_profilu_dugme;
+
+    @FXML
+    private Button rad_Na_Blagajni_dugme;
+    
+    
+    private String stringImeRadnika,stringNazivPredstave,stringZanr;
+    private String stringPrezimeRadnika;
+    private String pozoristeUKomRadi;
+    private String korisnicko = Kontroler_Radnik_prijava.vratiKorisnicko();
+    private static int pozoristeID;
+    public static int vratiPozoristeID() {
+    	return pozoristeID;
+    }
+    
+
+    @FXML
+    void dodaj_Novo_Izvodjenje_Predstave(ActionEvent event) {
+
+    }
+
+    @FXML
+    void dodaj_Novu_Predstavu(ActionEvent event) {
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("Radnik_Dodaje_Predstavu.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("Radniče " + Kontroler_Radnik_prijava.imeIPrezimeRadnika() + ", ovde se nalaze informacije o vama");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+    }
+
+    @FXML
+    void kreiraj_Novo_Pozoriste(ActionEvent event) {
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("Radnik_Kreira_Pozoriste.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("Radniče " + Kontroler_Radnik_prijava.imeIPrezimeRadnika() + ",kreirajte novo pozoriste!");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+    }
+
+    @FXML
+    void kreiraj_Radnika(ActionEvent event) {
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("Kreiranje_Radnika_Scena.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("Radniče " + Kontroler_Radnik_prijava.imeIPrezimeRadnika() + ", dodajte novog radnika!");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+    }
+
+    @FXML
+    void prikazi_Autore_Rezisere_Glumce(ActionEvent event) {
+
+    }
+
+    @FXML
+    void prikazi_Predstave_Naredni_Period(ActionEvent event) {
+
+    }
+
+    @FXML
+    void prikazi_Predstave_Prethodni_Period(ActionEvent event) {
+
+    }
+
+    @FXML
+    void prikazi_Sve_Predstave(ActionEvent event) {
+
+    }
+
+    @FXML
+    void prikazi_o_Profilu(ActionEvent event) {
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("O_Profilu_Scena.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("Radniče " + Kontroler_Radnik_prijava.imeIPrezimeRadnika() + ", ovde se nalaze informacije o vama");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+    }
+
+    @FXML
+    void rad_Na_Blagajni(ActionEvent event) {
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("Radnik_Na_Blagajni.fxml"));
+			Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+			Scene scene = new Scene(root);
+			stage.setTitle("Radniče " + Kontroler_Radnik_prijava.imeIPrezimeRadnika() + ", ovde se nalaze informacije o vama");
+			stage.setScene(scene);
+			stage.show();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+    }
+
+    @FXML
+    void switchto_Radnik_prijava_scena(ActionEvent event) {
+    	Alert upozorenje = new Alert(Alert.AlertType.CONFIRMATION);
+	 	upozorenje.setTitle("ODJAVA");
+	 	upozorenje.setContentText("Da li ste sigurni da želite da se odjavite?");
+    
+	 	Optional <ButtonType>result = upozorenje.showAndWait();
+	 	if(result.get()==ButtonType.OK) {
+	    	try {
+				root = FXMLLoader.load(getClass().getResource("Radnik_prijava.fxml"));
+				stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+				scene = new Scene(root);
+				stage.setTitle("Dobrodošli radniče, prijavite se!");
+				stage.setScene(scene);
+				stage.show();
+			}
+	    	catch(IOException e) {
+	    		e.printStackTrace();
+	    	}
+	 	}
+    }
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		// TODO Auto-generated method stub
+		for(Radnik_Pozorista r : Radnik_Pozorista.getLista_radnikaPozorista()) {
+			if(r.getKorisnicko_ime().equals(korisnicko)) {
+				stringImeRadnika = r.getIme();
+				stringPrezimeRadnika = r.getPrezime();
+				pozoristeUKomRadi = Pozoriste.pozoristeNaId(r.getPozoriste_id());
+				pozoristeID = r.getPozoriste_id();
+			}
+		}
+	}
+
+}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.MotionBlur?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="659.0" prefWidth="510.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="application.Kontroler_Nakon_prijave_Radnika">
+   <children>
+      <ImageView fitHeight="659.0" fitWidth="510.0" layoutY="-1.0" pickOnBounds="true">
+         <image>
+            <Image url="@../../../slika4.jpg" />
+         </image>
+         <effect>
+            <MotionBlur />
+         </effect>
+      </ImageView>
+      <Button fx:id="kreiranje_radnika_dugme" blendMode="LIGHTEN" layoutX="21.0" layoutY="34.0" mnemonicParsing="false" onAction="#kreiraj_Radnika" text="Kreirajte novog radnika!">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="kreiranje_novog_pozorista_dugme" blendMode="LIGHTEN" layoutX="271.0" layoutY="34.0" mnemonicParsing="false" onAction="#kreiraj_Novo_Pozoriste" text="Kreirajte novo pozorište!">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="informacije_o_profilu_dugme" blendMode="LIGHTEN" layoutX="22.0" layoutY="147.0" mnemonicParsing="false" onAction="#prikazi_o_Profilu" prefHeight="33.0" prefWidth="226.0" text="Profil">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="dodavanje_Nove_Predstave_dugme" blendMode="LIGHTEN" layoutX="272.0" layoutY="147.0" mnemonicParsing="false" onAction="#dodaj_Novu_Predstavu" text="Dodajte novu predstavu!">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="dodaj_Novo_Izvodjenje_dugme" blendMode="LIGHTEN" layoutX="14.0" layoutY="248.0" mnemonicParsing="false" onAction="#dodaj_Novo_Izvodjenje_Predstave" text="Dodajte novo izvodjenje predstave!" textAlignment="CENTER">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
+      <Button fx:id="rad_Na_Blagajni_dugme" blendMode="LIGHTEN" layoutX="348.0" layoutY="248.0" mnemonicParsing="false" onAction="#rad_Na_Blagajni" text="Rad na blagajni">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="prikaz_svih_predstava_dugme" blendMode="LIGHTEN" layoutX="22.0" layoutY="466.0" mnemonicParsing="false" onAction="#prikazi_Sve_Predstave" text="Prikaz svih predstava">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="prikaz_ososblja_dugme" blendMode="LIGHTEN" layoutX="204.0" layoutY="418.0" mnemonicParsing="false" onAction="#prikazi_Autore_Rezisere_Glumce" text="Prikaz autora,režisera,glumaca!">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="predstave_Naredni_Period_dugme" blendMode="LIGHTEN" layoutX="21.0" layoutY="557.0" mnemonicParsing="false" onAction="#prikazi_Predstave_Naredni_Period" text="Predstave u narednom periodu">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="predstave_Prethodni_Period_dugme" blendMode="LIGHTEN" layoutX="203.0" layoutY="509.0" mnemonicParsing="false" onAction="#prikazi_Predstave_Prethodni_Period" text="Predstave u prethodnom periodu">
+         <font>
+            <Font name="Georgia Italic" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="odjava_dugme" blendMode="LIGHTEN" layoutX="204.0" layoutY="616.0" mnemonicParsing="false" onAction="#switchto_Radnik_prijava_scena" style="-fx-underline: true;" text="ODJAVITE SE">
+         <font>
+            <Font name="Georgia Italic" size="13.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
